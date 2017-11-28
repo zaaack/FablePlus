@@ -1,0 +1,16 @@
+source https://www.nuget.org/api/v2
+content:none
+storage:none
+
+nuget FSharp.Core redirects:force
+nuget Fable.Core
+nuget Fable.Import.Node
+nuget Fable.Import.Mocha
+nuget Fable.PowerPack
+
+clitool dotnet-fable
+
+group Build
+    source https://www.nuget.org/api/v2
+    nuget FSharp.Formatting 3.0.0-beta01
+    nuget FAKE

@@ -107,10 +107,20 @@ let fableSplitter workingDir =
         { c with WorkingDir = workingDir
                  ToolPath = dotnetExePath }
         ) "fable npm-run build:test"
+let fableSplitterWithWatch workingDir =
+    DotNetCli.RunCommand(fun c ->
+        { c with WorkingDir = workingDir
+                 ToolPath = dotnetExePath }
+        ) "fable npm-run build:test -- -w"
 
 let mocha args =
     Yarn(fun yarnParams ->
         { yarnParams with Command = args |> sprintf "run mocha -- %s" |> YarnCommand.Custom }
+    )
+
+let mochaWithWatch args =
+    Yarn(fun yarnParams ->
+        { yarnParams with Command = args |> sprintf "run mocha -- -w %s" |> YarnCommand.Custom }
     )
 
 Target "QuickTest" (fun _ ->
@@ -125,7 +135,28 @@ Target "QuickTest" (fun _ ->
         let projDirOutput = projDir </> "bin" </> "lib" </> "**/*.test.js"
         mocha projDirOutput
     )
+)
 
+Target "WatchTest" (fun _ ->
+    !! testsGlob
+    |> Seq.map(fun proj ->
+        let projDir = proj |> DirectoryName
+        printfn "projDir: %A" projDir
+        //Compile to JS
+
+        //Run mocha tests
+        let projDirOutput = projDir </> "bin" </> "lib" </> "**/*.test.js"
+        let runFable =
+          async { return fableSplitterWithWatch projDir }
+        let runMocha =
+          async { return mochaWithWatch projDirOutput }
+
+        Async.Parallel [| runFable; runMocha |]
+    )
+    |> Seq.toArray
+    |> Async.Parallel
+    |> Async.Ignore
+    |> Async.RunSynchronously
 )
 
 Target "MochaTest" ignore

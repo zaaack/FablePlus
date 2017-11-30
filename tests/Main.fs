@@ -1,4 +1,4 @@
-module Tests
+module FablePlus.Tests.Main
 
 open Fable.Core.JsInterop
 

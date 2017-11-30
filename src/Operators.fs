@@ -1,3 +1,4 @@
+[<AutoOpen>]
 module FablePlus.Operators
 
 open Functor
@@ -36,6 +37,35 @@ let inline (<<|)  (f:'T->'U) (x:'``Functor<'T>``) :'``Functor<'U>`` = Map.Invoke
 let inline (|>>)  (x:'``Functor<'T>``) (f:'T->'U) :'``Functor<'U>`` = Map.Invoke f x
 
 
-let a: Result<int, string> = Ok 1
+// // Applicative ------------------------------------------------------------
 
-let c = a |>> fun b -> b + 2
+// /// Lift a value into a Functor. Same as return in Computation Expressions.
+// // let inline result (x:'T): '``Functor<'T>`` = Return.Invoke x
+
+// /// Apply a lifted argument to a lifted function.
+// let inline (<*>) (x:'``Applicative<'T -> 'U>``) (y:'``Applicative<'T>``): '``Applicative<'U>`` = Apply.Invoke x y : '``Applicative<'U>``
+
+// /// Apply 2 lifted arguments to a lifted function.
+// let inline liftA2 (f:'T->'U->'V) (a:'``Applicative<'T>``) (b:'``Applicative<'U>``) : '``Applicative<'V>`` = f <!> a <*> b
+
+// let inline (  *>)   (x:'``Applicative<'T>``) : '``Applicative<'U>``->'``Applicative<'U>`` = x |> liftA2 (fun   _ -> id)
+// let inline (<*  )   (x:'``Applicative<'T>``) : '``Applicative<'U>``->'``Applicative<'T>`` = x |> liftA2 (fun k _ -> k )
+// let inline (<**>)   (x:'``Applicative<'T>``) : '``Applicative<'T -> 'U>``->'``Applicative<'U>`` = x |> liftA2 (|>)
+// // let inline optional (v:'``Applicative<'T>``) : '``Applicative<Option'T>`` = Some <!> v <|> result None
+
+
+
+
+// Monad -----------------------------------------------------------
+
+/// Takes a monadic value and a function from a plain type to a monadic value, and returns a new monadic value.
+let inline (>>=) (x:'``Monad<'T>``) (f:'T->'``Monad<'U>``) :'``Monad<'U>`` = Bind.Invoke x f
+
+/// Takes a function from a plain type to a monadic value and a monadic value, and returns a new monadic value.
+let inline (=<<) (f:'T->'``Monad<'U>``) (x:'``Monad<'T>``) :'``Monad<'U>`` = Bind.Invoke x f
+
+let inline (>=>) (f:'T->'``Monad<'U>``) (g:'U->'``Monad<'V>``) (x:'T) : '``Monad<'V>`` = Bind.Invoke (f x) g
+let inline (<=<) (g:'b->'``Monad<'V>``) (f:'T->'``Monad<'U>``) (x:'T) : '``Monad<'V>`` = Bind.Invoke (f x) g
+
+/// Flattens two layers of monadic information into one.
+// let inline join  (x:'``Monad<Monad<'T>>``) : '``Monad<'T>`` = Join.Invoke x

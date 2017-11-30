@@ -7,9 +7,13 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Internals.fs" />
+    <Compile Include="Utils.fs" />
+    <Compile Include="test.fs" />
+    <Compile Include="test2.fs" />
+    <Compile Include="Extensions.fs" />
     <Compile Include="Functor.fs" />
     <Compile Include="Operators.fs" />
-    <Compile Include="FablePlus.fs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="*.fsproj; *.fs; *.js" PackagePath="fable\" />

@@ -8,13 +8,7 @@ function getByKeys (record, keys) {
   return record
 }
 
-export function setIn(setter, value, record) {
-  if (arguments.length < 3) {
-    let args = arguments
-    return function curriedSetIn() {
-      return setIn(Array.prototype.concat.call(args, arguments))
-    }
-  }
+function lambdaToKeyPath(setter) {
   setter = setter.toString()
   let m = setter.match(funRe)
   if (!m) {
@@ -38,6 +32,18 @@ export function setIn(setter, value, record) {
     }
   }
   push(path.slice(start))
+  return keys
+}
+
+export function setIn(setter, value, record) {
+  if (arguments.length < 3) {
+    const args = arguments
+    return function curriedSetIn() {
+      return setIn(Array.prototype.concat.call(args, arguments))
+    }
+  }
+  const keys = lambdaToKeyPath(setter)
+  console.log('keys', keys)
   let newRecord = new record.constructor()
   Object.assign(newRecord, record)
   let oldCursor = record

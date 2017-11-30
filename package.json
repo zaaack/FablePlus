@@ -1,7 +1,7 @@
 {
     "scripts": {
         "mocha": "mocha  --require babel-register",
-        "build:test": "fable-splitter ./tests/Fable.Validation.Tests.fsproj -o ./tests/bin/lib"
+        "build:test": "fable-splitter ./tests/FablePlus.Tests.fsproj -o ./tests/bin/lib"
     },
     "devDependencies": {
         "babel-core": "^6.26.0",
